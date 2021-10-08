@@ -1,0 +1,9 @@
+sbenv/
+static/
+media/
+__pycache__/
+*.sqlite3
+*.pyc 
+__pycache__
+*_initial.py
+000*

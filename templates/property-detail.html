@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+ {% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{ form.media }}
+  {% endblock %}
+
+{% block body %}
+<!-- banner -->
+<div class="inside-banner">
+  <div class="container"> 
+    <span class="pull-right"><a href="{% url 'property:index' %}">Home</a> / Buy</span>
+    <h2>Buy</h2>
+</div>
+</div>
+<!-- banner -->
+
+<div class="container">
+<div class="properties-listing spacer">
+<div class="row">
+<div class="col-lg-3 col-sm-4 hidden-xs">
+<div class="hot-properties hidden-xs">
+  <h4>Hot Properties</h4>
+  {% for prt in properties %}
+    <div class="row">
+      <div class="col-lg-4 col-sm-5"><img src="{{ prt.image.url }}" class="img-responsive img-circle" alt="properties"/></div>
+      <div class="col-lg-8 col-sm-7">
+        <h5><a href="property-detail.php">{{ prt.name }}</a></h5>
+        <p class="price">${{ prt.price|intcomma }}</p> </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+
+<div class="advertisement">
+  <h4>{{ property.name }}</h4>
+  <img src="{{ property.image.url }}" class="img-responsive" alt="advertisement">
+
+</div>
+
+</div>
+
+<div class="col-lg-9 col-sm-8 ">
+
+<h2>{{ property.title }}</h2><div class="row">
+{{ property.get_is_status_now_display }}
+{% if property.is_status_now == 'active' %} 
+  view:{{ count_number }} 
+{% else %} 
+  this property with {{ count_number }} view had {{ property.get_is_status_now_display }}
+{% endif %}
+{% if request.user.is_authenticated and request.user.is_admin  %}
+        <a href="{% url 'property:edit_property' property.code %}" class="btn btn-info" href="">Edit property</a>
+        <a href="{% url 'property:add_image' property.code %}" class="btn btn-info" href="">Add image</a>
+{% endif %}
+</div>
+<div class="row">
+  <div class="col-lg-8">
+  <div class="property-images">
+    <!-- Slider Starts -->
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators hidden-xs">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      {% for img in property.property_image.all %}
+        <li data-target="#myCarousel" data-slide-to="1" class=""></li>
+      {% endfor %}
+      </ol>
+      <div class="carousel-inner">
+        <!-- Item 1 -->
+        <div class="item active">
+          <img src="{{ property.image.url }}" class="properties" alt="properties" />
+        </div>
+        <!-- #Item 1 -->
+        {% for img in property.property_image.all %}
+
+          <!-- Item 2 -->
+          <div class="item">
+            <img src="{% static 'images/properties/2.jpg' %}" class="properties" alt="properties" />
+
+          </div>
+          <!-- #Item 2 -->
+        {% endfor %}
+        
+      </div>
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+<!-- #Slider Ends -->
+
+  </div>
+  
+
+
+
+  <div class="spacer"><h4><span class="glyphicon glyphicon-th-list"></span> Properties Detail</h4>
+  <p>{{ property.description }}</p>
+
+  </div>
+  <div><h4><span class="glyphicon glyphicon-map-marker"></span> Location</h4>
+<div class="well">{{ property.location }}</iframe></div>
+  </div>
+
+  </div>
+  <div class="col-lg-4">
+  <div class="col-lg-12  col-sm-6">
+<div class="property-info">
+<p class="price">${{property.price|intcomma}}</p>
+  <p class="area"><span class="glyphicon glyphicon-map-marker"></span> 344 Villa, Syndey, Australia</p>
+  
+  <div class="profile">
+  <span class="glyphicon glyphicon-user"></span> Agent Details
+  <p>{{ property.agent.name }}<br>{{ property.agent.number }} <a href="tel:{{property.agent.number}}">please click for call</a></p>
+  </div>
+</div>
+
+    <h6><span class="glyphicon glyphicon-home"></span> Availabilty</h6>
+    <div class="listing-detail">
+    {% for ava in avas %}
+      <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{ ava }}">{{ forloop.counter }}</span>
+    {% endfor %}
+    </div>
+
+</div>
+<div class="col-lg-12 col-sm-6 ">
+<div class="enquiry">
+  <h6><span class="glyphicon glyphicon-envelope"></span> Post Enquiry</h6>
+  <form role="form">
+                <input type="text" class="form-control" placeholder="Full Name"/>
+                <input type="text" class="form-control" placeholder="you@yourdomain.com"/>
+                <input type="text" class="form-control" placeholder="your number"/>
+                <textarea rows="6" class="form-control" placeholder="Whats on your mind?"></textarea>
+      <button type="submit" class="btn btn-primary" name="Submit">Send Message</button>
+      </form>
+ </div>         
+</div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<div>
+
+  <div><img style="width:100%; height:80%" src="{% static 'images/properties/3.jpg' %}" /></div>
+
+</div>
+
+<div class="banner-search">
+  <div class="container"> 
+    <!-- banner -->
+    <h3>Buy, Sale & Rent</h3>
+    <div class="searchbar">
+      <div class="row">
+      <form action="{% url 'property:search' ' ' %}" method="GET">
+        <div class="col-lg-6 col-sm-6">
+          <input type="text" name="text." class="form-control" placeholder="Search of Properties">
+          <div class="row">
+            <div class="col-lg-3 col-sm-3 ">
+              <select name="status" class="form-control">
+                <option>status</option>
+                <option value="Buy" >Buy</option>
+                <option value="Rent">Rent</option>
+                <option value="Sale">Sale</option>
+              </select>
+            </div>
+            <div class="col-lg-3 col-sm-4">
+              <input name="pricet" type="number" class="form-control" placeholder="Price less than ...">
+            </div>
+            <div class="col-lg-3 col-sm-4">
+            <select name="category" class="form-control">
+                <option value="Property"    >Property</option>
+                <option value="Apartment"   >Apartment</option>
+                <option value="Building"    >Building</option>
+                <option value="Office"   >Office</option>
+                <option value="Ground">Dirty Ground</option>
+                <option value="Garden"      >Garden</option>
+              </select>
+              </div>
+              <div class="col-lg-3 col-sm-4">
+              <button class="btn btn-success"  onclick="window.location.href='buysalerent.php'">Find Now</button>
+              </div>
+          </div>          
+        </div>
+      </form>  
+        <div class="col-lg-5 col-lg-offset-1 col-sm-6 ">
+          <p>Join now and get updated with all the properties deals.</p>
+          {% if request.user.is_authenticated %}
+            <a class="btn btn-info" href="{% url 'accounts:signout' %}">Logout</a>
+          {% else %}
+            <button class="btn btn-info" data-toggle="modal" data-target="#loginpop">Login</button>
+          {% endif %}
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>
+<!-- banner -->
+
+
+<div class="container">
+  <div class="properties-listing spacer"> <a href="{% url 'property:blog' %}" class="pull-right viewall">View All Listing</a>
+    <h2>Featured Properties</h2>
+
+    <div class="row" >
+      {% for pro in properties %}  
+        <div class="properties col-md-2">
+          <div class="image-holder"><img src="{{ pro.image.url }}" class="img-responsive" alt="properties"/>
+          {% if pro.is_status_now != 'active' %}
+            <div class="status sold">{{ pro.get_is_status_now_display }}</div>
+          {% endif %}
+          </div>
+          <h4><a href="property-detail.php">Royal Inn</a></h4>
+          <p class="price">Price: ${{ pro.price }}</p>
+          <div class="listing-detail">
+          {% for tag in pro.availability.all %}
+            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{ tag.name }}">{{ forloop.counter }}</span>
+          {% endfor %}
+          </div>
+          <a class="btn btn-primary" href="{% url 'property:property_detail' pro.code %}">View Details</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="spacer">
+    <div class="row">
+      <div class="col-lg-6 col-sm-9 recent-view">
+        <h3>About Us</h3>
+        <p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.<br><a href="about.php">Learn More</a></p>
+      
+      </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% if messages %}
+        {% for msg in messages %}
+                <h1 class="col-md-12 alert alert-{{ msg.tags }}">{{ msg }}</h1>
+        {% endfor %}
+{% endif %}

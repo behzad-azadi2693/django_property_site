@@ -1,0 +1,46 @@
+{% load static %}
+<DOCTYPE>
+<html>
+<head>
+<title>Realestate Bootstrap Theme </title>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/style.css' %}"/>
+  
+  {% block head %} {% endblock %}
+
+
+<!-- Owl stylesheet -->
+<link rel="stylesheet" href="{% static 'assets/owl-carousel/owl.carousel.css' %}">
+<link rel="stylesheet" href="{% static 'assets/owl-carousel/owl.theme.css' %}">
+<!-- Owl stylesheet -->
+
+
+<!-- slitslider -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/slitslider/css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/slitslider/css/custom.css' %}" />
+    
+<!-- slitslider -->
+
+</head>
+<body>
+    {% include 'nav/header.html' %}
+    {% include 'nav/msg.html' %}
+       {% block body %}
+    
+    
+        {% endblock %}
+    {% include 'nav/footer.html' %}
+    {% block js %}
+    <script type="text/javascript" src="{% static 'assets/slitslider/js/modernizr.custom.79639.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/slitslider/js/jquery.ba-cond.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/slitslider/js/jquery.slitslider.js' %}"></script>
+    <script src="{% static 'assets/owl-carousel/owl.carousel.js' %}"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="{% static 'assets/bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/script.js' %}"></script>
+    {% endblock %}
+</body>
+</html>

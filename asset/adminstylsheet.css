@@ -1,0 +1,49 @@
+#header a:link, #header a:visited {
+    color: green;
+}
+#header{
+    background-image:url("/static/images/bgmain.png");
+
+}
+#user-tools{
+    color: green;
+}
+#container a{
+    background-image:url("/static/images/bgmain.png");
+    color: green;
+}
+a.section:link, a.section:visited {
+    color: white;
+}
+.module h2, .module caption, .inline-group h2 {
+    background-image: url("/static/images/bg.jpg");
+}
+
+#branding h1 {
+    color: green;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #01bacf;
+}
+
+￼
+.button.default, input[type=submit].default, .submit-row input.default {
+    background: #0131cf;
+}
+.button.default, input[type="submit"].default, .submit-row input.default {
+    background-color:b#5bc0de;
+
+}
+div.breadcrumbs {
+    background: rgb(77, 75, 75);
+}
+
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background:b#5bc0de;
+}
+
+div.breadcrumbs {
+    background-image: url("/static/images/bg.jpg");
+}

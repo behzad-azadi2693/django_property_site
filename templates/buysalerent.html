@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% load static %}
+
+
+{% block body %}
+<!-- banner -->
+<div class="inside-banner">
+  <div class="container"> 
+    <span class="pull-right"><a href="index.php">Home</a> / Buy, Sale & Rent</span>
+    <h2>Buy, Sale & Rent</h2>
+</div>
+</div>
+<!-- banner -->
+
+
+<div class="container">
+<div class="properties-listing spacer">
+
+<div class="row">
+<div class="col-lg-3 col-sm-4 ">
+
+<form action="{% url 'property:search' ' ' %}" method="GET">
+  <div class="search-form"><h4><span class="glyphicon glyphicon-search"></span> Search for</h4>
+    <input type="text" name="text" {% if text %} value={{text}} {% endif %} class="form-control" placeholder="Search of Properties">
+    <div class="row">
+            <div class="col-lg-5">
+              <select name="status" class="form-control">
+                <option>status</option>
+                <option {%if status == 'Buy' %} selected {% endif %} value="Buy" >Buy</option>
+                <option {%if status == 'Rent' %} selected {% endif %} value="Rent">Rent</option>
+                <option {%if status == 'Sale' %} selected {% endif %} value="Sale">Sale</option>
+              </select>
+            </div>
+            <div class="col-lg-7">
+              <input type="number" {% if price %} value={{price}} {% endif %} name="price" class="form-control" placeholder="Price less than ...">
+            </div>
+          </div>
+
+          <div class="row">
+          <div class="col-lg-12">
+              <select name="category" class="form-control">
+                <option {%if category == 'Property' %} selected {% endif %} value="Property"    >Property</option>
+                <option {%if category == 'Apartment' %} selected {% endif %} value="Apartment"   >Apartment</option>
+                <option {%if category == 'Building' %} selected {% endif %} value="Building"    >Building</option>
+                <option {%if category == 'Office Space' %} selected {% endif %} value="Office Space">Office Space</option>
+                <option {%if category == 'Ground' %} selected {% endif %} value="Ground">Ground</option>
+                <option {%if category == 'Garden' %} selected {% endif %} value="Garden"      >Garden</option>
+              </select>
+              </div>
+          </div>
+          <button class="btn btn-primary">Find Now</button>
+
+  </div>
+
+</form>
+
+<div class="hot-properties hidden-xs">
+  <h4>Hot Properties</h4>
+  {% for pro in hots %}
+  <div class="row">
+    <div class="col-lg-4 col-sm-5"><img src="{{ pro.image.url }}" class="img-responsive img-circle" alt="properties"></div>
+    <div class="col-lg-8 col-sm-7">
+      <h5><a href="{% url 'property:property_detail' pro.code %}">{{ pro.name }}</a></h5>
+      <p class="price">$ {{ pro.price|intcomma }}</p> 
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+</div>
+<div class="col-lg-9 col-sm-8">
+<div class="sortby clearfix">
+  <div class="pull-left result">
+    Showing:
+    {% if searchs.number == searchs.number.count %}
+      {{ my_count }}
+    {% elif searchs.number.count > 0  %}
+      {% widthratio  searchs.number 1 12 %}
+    {% else %} {{properties.count}} {% endif %} of {{properties.count}} 
+  </div>
+  <div class="pull-right">
+    <select class="form-control">
+      <option>Sort by</option>
+      <option>Price: Low to High</option>
+      <option>Price: High to Low</option>
+    </select>
+  </div>
+
+</div>
+<div class="row">
+    <div class="row">
+
+      <!-- properties -->
+      {% for pro in searchs %}
+        <div class="col-lg-4 col-sm-6">
+        <div class="properties">
+          <div class="image-holder"><img src="{{ pro.image.url }}" class="img-responsive" alt="properties">
+            {% if pro.is_status_now != 'active' %}  
+              <div class="status sold">{{ pro.get_is_status_now_display }}</div>
+            {% endif %}
+          </div>
+          <h4><a href="property-detail.php">{{ pro.name }}</a></h4>
+          <p class="price">Price: $ {{pro.price|intcomma}}</p>
+          <div class="listing-detail">
+          {% for tag in pro.availability.all %}
+            <span data-toggle="tooltip" data-placement="bottom" data-original-title={{ tag.name }}>{{ forloop.counter }}</span> 
+          {% endfor %}  
+          </div>
+          
+          <a class="btn btn-primary" href="{% url 'property:property_detail' pro.code %}">View Details</a>
+        </div>
+        </div>
+      {% endfor %}
+      <!-- properties -->
+    </div>
+    <div class="row">
+      <div class="center">
+      {% if searchs.has_other_pages %}
+        <ul class="pagination">
+          {% if searchs.has_previous %}
+            <li><a href="?page={{searchs.previous_page_number}}">«</a></li>
+          {% else %}
+            <li><a>«</a></li>
+          {% endif %}
+          {% for i in product.paginator.page_range %} 
+            {% if searchs.number == i %}
+            <li><a href="#">{{i}}</a></li>
+            {% else %}
+               <li><a href="?page={{i}}">{{i}}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if searchs.has_next %}
+            <li><a href="?page={{searchs.next_page_number}}">»</a></li>
+          {% else %}
+            <li><a>»</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}      
+      </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

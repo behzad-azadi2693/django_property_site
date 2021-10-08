@@ -1,0 +1,15 @@
+{% extends 'admin/base.html' %} 
+{% load static %}
+
+{% block branding %}
+    <h1 id="head">
+        <img src="{% static 'images/logo.png' %}" alt="پنل ادمین Property" class="brand_image">
+    </h1>
+
+
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static 'adminstylsheet.css' %}">
+
+{% endblock %}
