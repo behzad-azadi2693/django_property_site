@@ -7,8 +7,10 @@ from accounts.models import Agent
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from .serializers import (
-            AgentSerializer, AvailabilitySerializer, CatSerializer, CategorySerializer, CommentSerializer, DetailPropertySerializer, EmailSerializer, ListBlogSerializer, ListPropertySerializer,
-            DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin
+            AgentSerializer, AvailabilitySerializer, CatSerializer, CategorySerializer, DetailBlogSerializerAdmin,
+            CommentSerializer, DetailPropertySerializer, EmailSerializer, ListBlogSerializer, ListPropertySerializer,
+            DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
+            BlogSerializer
         )
 
 class SetPagination(PageNumberPagination):
@@ -41,7 +43,17 @@ class BlogList(ListAPIView):
     
 class BlogDetail(RetrieveAPIView):
     queryset = Blog.objects.all()
-    serializer_class = DetailBlogSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated and self.request.user.is_admin:
+            return DetailBlogSerializerAdmin
+        else:
+            return DetailBlogSerializer
+
+class UpdateBlog(RetrieveUpdateAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [IsAdminUser]
 
 class CreateAgent(CreateAPIView):
     models = Agent

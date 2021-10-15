@@ -158,6 +158,42 @@ class DetailBlogSerializer(ModelSerializer):
         result = ListBlogSerializer(recents, many=True).data 
         return result
 
+class BlogSerializer(ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = ('image','title','description')
+
+
+class DetailBlogSerializerAdmin(ModelSerializer):
+    url_update = HyperlinkedIdentityField(view_name='api:update_blog')
+    comments = SerializerMethodField()
+    most_comment = SerializerMethodField()
+    recent_blog = SerializerMethodField()
+    comment = CommentSerializer(write_only=True)
+
+    class Meta:
+        model = Blog
+        fields = ('url_update','image','title','description','date', 'comments', 'most_comment', 'recent_blog', 'comment')
+
+    def get_comments(self, obj):
+        cmt = Comment.objects.filter(blog=obj)
+        all_cmt = CommentSerializer(cmt, many=True).data
+        return all_cmt
+
+    def get_most_comment(self, obj):
+        o_list = Comment.objects.values('blog_id').annotate(ocount=Count('blog_id'))
+        top_three_ojcect = sorted(o_list, key = lambda k: k['ocount'])[:3]
+        list_pk = [obj['blog_id'] for obj in top_three_ojcect]
+        mosts = Blog.objects.filter(pk__in = list_pk)
+
+        result = ListBlogSerializer(mosts, many=True).data 
+        return result
+
+    def get_recent_blog(self, obj):
+        recents = Blog.objects.all().order_by('-id')[:3]
+        result = ListBlogSerializer(recents, many=True).data 
+        return result
+    
 class CatSerializer(ModelSerializer):
     url_update = SerializerMethodField()
 

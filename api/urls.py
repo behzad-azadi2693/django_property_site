@@ -5,7 +5,7 @@ from .views import (
         IndexSite, DetailProperty, BlogList, BlogDetail, CreateNewsLetter,
         CreateAgent, UpdateAgent, CreateCategory, UpdateCategory,CreateEmail,
         CreateAvail, UpdateAvail, ListCAA,Agents,CreateProperty,UpdateProperty,
-        CreateComment,PropertyPiec
+        CreateComment,PropertyPiec,UpdateBlog
     )
 app_name = 'api'
 
@@ -29,5 +29,6 @@ urlpatterns = [
 
     path('create/property/', CreateProperty.as_view(), name='create_property'),
     path('update/property/<int:pk>/', UpdateProperty.as_view(), name='update_property'),
+    path('update/blog/<int:pk>/', UpdateBlog.as_view(), name='update_blog'),
 
 ]   
