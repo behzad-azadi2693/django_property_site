@@ -2,6 +2,7 @@ from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from .models import Availability, Blog, Category, Comment, Email, Property
 from accounts.models import Agent
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required 
 from .forms import (
                 AddImageForm, CommentForm, NewsletterForm,
@@ -13,7 +14,7 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import redis
 
-conn = redis.Redis('redis_container', port= 6379, db=0,password="admin", charset='utf-8', decode_responses=True) 
+conn = redis.Redis('127.0.0.1', port= 6379, db=0,password="admin", charset='utf-8', decode_responses=True) 
 #decode_response for convert b'one':b'1' to 'one':'1'
 
 
@@ -31,7 +32,6 @@ def about(request):
     return render(request, 'about.html')
 
 
-from django.db.models import Count
 
 def blog(request):
     blogs = Blog.objects.all()
@@ -129,7 +129,9 @@ def property_detail(request, code):
         'property':property,
         'form':form,
         'avas':avas,
-        'count_number': count_number
+        'count_number': count_number,
+        'one': property.location[0],
+        'two': property.location[1]
     }
     return render(request, 'property-detail.html', context)
 

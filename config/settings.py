@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'property.apps.PropertyConfig',
     'django.contrib.humanize',
+    'api.apps.ApiConfig',
     #map
     'django.contrib.gis',
     'location_field.apps.DefaultConfig',
+    #3rd
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

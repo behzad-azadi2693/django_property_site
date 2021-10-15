@@ -76,10 +76,10 @@ networks:
         
 volumes: 
     static:
-        external: true
+        #external: true
         
     postgres_data:
-        external: true
+        #external: true
         
     redisdata:
-        external: true
+        #external: true

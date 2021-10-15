@@ -1,12 +1,13 @@
 from django.db import models
 from uuid import uuid4
+from django.core.validators import MaxValueValidator,MinValueValidator
 
 from django.db.models.fields import BLANK_CHOICE_DASH
 from accounts.models import Agent
 from location_field.models.spatial import LocationField
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.fields import PointField, GeometryField
-
+from django.urls import reverse
 class Category(models.Model):
     name = models.CharField(max_length=250, verbose_name='دسته بندی')
 
@@ -56,7 +57,7 @@ class Property(models.Model):
     price = models.PositiveBigIntegerField(verbose_name='قیمت')
     title = models.CharField(max_length=200, verbose_name='توضیحات کوتاه خانه')
     image = models.ImageField(upload_to=path_save_image , verbose_name='تصویر اصلی')
-    rating = models.IntegerField(verbose_name='امتیاز')
+    rating = models.PositiveIntegerField(verbose_name='امتیاز',validators=[MinValueValidator(0), MaxValueValidator(10)] )
     status = models.CharField(max_length=4, choices=CHOICE, verbose_name='وضعیت')
     is_status_now = models.CharField(max_length=10, choices=CHOICE_NOW, verbose_name='وضعیت فعلی')
     date = models.DateField(auto_now_add=True)
@@ -67,7 +68,7 @@ class Property(models.Model):
         verbose_name_plural = 'املاک'
 
     def __str__(self):
-        return self.name
+        return f'{self.name}-{self.code}'
     
     def delete(self, *args, **kwargs):
         self.image.delete()
@@ -82,6 +83,8 @@ class Property(models.Model):
             pass
         super(Property, self).save(*args, **kwargs)
 
+    def get_api_url(self):
+        return reverse('api:detail', args=[self.code])
 
 def path_save_images(instance, filename):
     ext = filename.split('.')[-1]
@@ -95,6 +98,9 @@ class Images(models.Model):
     class Meta:
         verbose_name = 'تصاویر'
         verbose_name_plural = 'تصاویر'
+
+    def __str__(self):
+        return f'{self.image}'
 
     def delete(self, *args, **kwargs):
         self.image.delete()
@@ -165,6 +171,9 @@ class Blog(models.Model):
             pass
         super(Blog, self).save(*args, **kwargs)
 
+    def get_api_url(self):
+        return reverse("api:blog_detail", args=[self.pk])
+    
 
 class Comment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='blog_comment')

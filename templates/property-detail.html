@@ -3,8 +3,7 @@
 {% load humanize %}
 
  {% block head %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    {{ form.media }}
+     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
   {% endblock %}
 
 {% block body %}
@@ -101,7 +100,7 @@
 
   </div>
   <div><h4><span class="glyphicon glyphicon-map-marker"></span> Location</h4>
-<div class="well">{{ property.location }}</iframe></div>
+<div class="well"  id="mapdiv"></iframe></div>
   </div>
 
   </div>
@@ -144,4 +143,25 @@
 </div>
 </div>
 
+{% endblock %}
+{% block js %}
+<script>
+    map = new OpenLayers.Map("mapdiv");
+    map.addLayer(new OpenLayers.Layer.OSM());
+
+    var lonLat = new OpenLayers.LonLat( {{one}} ,{{two}} )
+          .transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            map.getProjectionObject() // to Spherical Mercator Projection
+          );
+          
+    var zoom=17;
+
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers);
+    
+    markers.addMarker(new OpenLayers.Marker(lonLat));
+    
+    map.setCenter (lonLat, zoom);
+  </script>
 {% endblock %}
