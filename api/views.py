@@ -1,17 +1,19 @@
 from rest_framework import status
-from rest_framework.generics import (
-                CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
-                RetrieveUpdateDestroyAPIView
-            )
+from django.core.mail import send_mail
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from property.models import Availability, Blog, Category, Comment, Email, Images, NewsLetter, Property
 from accounts.models import Agent
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import (
+                CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
+                RetrieveUpdateDestroyAPIView
+            )
 from .serializers import (
-            AgentSerializer, AvailabilitySerializer, CatSerializer, CategorySerializer, DetailBlogSerializerAdmin,
-            CommentSerializer, DetailPropertySerializer, EmailSerializer, ImagesSerializer, ListBlogSerializer, ListPropertySerializer,
+            AgentSerializer, AvailabilitySerializer, CategorySerializer, DetailBlogSerializerAdmin,
+            CommentSerializer, DetailPropertySerializer, EmailSerializer, NewsLettersSerializer, ListBlogSerializer, ListPropertySerializer,
             DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
             BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer
         )
@@ -20,6 +22,33 @@ class SetPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 1000
+
+class SendingEmail(APIView):
+    permission_classes = [IsAdminUser]
+    
+    def get(self, request, *args, **kwargs):
+        srz = NewsLettersSerializer()
+        return Response(srz.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+
+        srz = NewsLettersSerializer(request.data)
+        if srz.is_valid():
+            emails = NewsLetter.objcets.all()
+            subject = srz['subject']
+            message = srz['message']
+            email_list = [email for email in emails]
+            send_mail(
+                subject,
+                message,
+                'Property Site',
+                email_list,
+                fail_silently=False,
+            )
+            return Response(srz.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            srz = NewsLetterSerializer(request.data)
+            return Response(srz.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class IndexSite(ListAPIView):
     queryset = Property.objects.all()
@@ -145,6 +174,8 @@ class ManageImage(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUser]
 
 class AddImages(APIView):
+    permission_classes = [IsAdminUser]
+
     def get(self, request, *args, **kwargs):
         srz = AddImageSerializer()
         return Response(srz.data, status=status.HTTP_200_OK)

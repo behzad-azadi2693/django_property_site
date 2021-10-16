@@ -1,6 +1,6 @@
 from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import Availability, Blog, Category, Comment, Email, Images, Property
+from .models import Availability, Blog, Category, Comment, Email, Images, NewsLetter, Property
 from accounts.models import Agent
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required 
@@ -234,7 +234,7 @@ def email_sending(request):
         form = EmalSendingForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            emails = NewsletterForm.objcets.all()
+            emails = NewsLetter.objcets.all()
 
             subject = cd['subject']
             message = cd['message']

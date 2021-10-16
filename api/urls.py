@@ -6,7 +6,7 @@ from .views import (
         CreateAgent, UpdateAgent, CreateCategory, UpdateCategory,CreateEmail,
         CreateAvail, UpdateAvail, ListCAA,Agents,CreateProperty,UpdateProperty,
         CreateComment,PropertyPiec,CreateComment,PropertyPiec,UpdateBlog,
-        EditImages,ManageImage,AddImages
+        EditImages,ManageImage,AddImages, SendingEmail
     )
 app_name = 'api'
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('', IndexSite.as_view(), name='index'),
     path('list/CatAval/', ListCAA.as_view(), name='list'),
     path('blogs/', BlogList.as_view(), name='index'),
+    path('sending/email/', SendingEmail.as_view(), name='email_sending'),
     path('blogs/detail/<int:pk>/', BlogDetail.as_view(), name='blog_detail'),
     path('detail/<str:code>/', DetailProperty.as_view(), name='detail'),
     path('create/agent/', CreateAgent.as_view(), name='create_agent'),

@@ -1,14 +1,15 @@
-
 from django.db import models
-from django.http import request
-from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer, SerializerMethodField
 from accounts.models import Agent
 from property.models import Blog, Category, Email, Images, NewsLetter, Property, Comment, Availability
 from rest_framework.reverse import reverse
 from django.db.models import Count, fields
-from rest_framework.request import Request
 
+class NewsLettersSerializer(ModelSerializer):
+    class Meta:
+        model = NewsLetter
+        exclude = ('id',)
+        
 class AvailabilitySerializer(ModelSerializer):
     class Meta:
         model = Availability
