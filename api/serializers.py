@@ -1,15 +1,14 @@
-from django.db import models
+from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer, SerializerMethodField
 from accounts.models import Agent
 from property.models import Blog, Category, Email, Images, NewsLetter, Property, Comment, Availability
 from rest_framework.reverse import reverse
-from django.db.models import Count, fields
+from django.db.models import Count
 
-class NewsLettersSerializer(ModelSerializer):
-    class Meta:
-        model = NewsLetter
-        exclude = ('id',)
-        
+class EmailSendingSerializer(serializers.Serializer):
+    subject = serializers.CharField(allow_blank=True,max_length=200)
+    message = serializers.CharField(allow_blank=True,style={'base_template': 'textarea.html'})
+    
 class AvailabilitySerializer(ModelSerializer):
     class Meta:
         model = Availability

@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import serializers, status
 from django.core.mail import send_mail
 
 from rest_framework.response import Response
@@ -13,9 +13,9 @@ from rest_framework.generics import (
             )
 from .serializers import (
             AgentSerializer, AvailabilitySerializer, CategorySerializer, DetailBlogSerializerAdmin,
-            CommentSerializer, DetailPropertySerializer, EmailSerializer, NewsLettersSerializer, ListBlogSerializer, ListPropertySerializer,
+            CommentSerializer, DetailPropertySerializer, EmailSerializer, ListBlogSerializer, ListPropertySerializer,
             DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
-            BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer
+            BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer, EmailSendingSerializer
         )
 
 class SetPagination(PageNumberPagination):
@@ -23,16 +23,18 @@ class SetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
-class SendingEmail(APIView):
+class SendingEmail(RetrieveAPIView):
+    serializer_class = EmailSendingSerializer
+
     permission_classes = [IsAdminUser]
     
     def get(self, request, *args, **kwargs):
-        srz = NewsLettersSerializer()
+        srz = EmailSendingSerializer()
         return Response(srz.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
 
-        srz = NewsLettersSerializer(request.data)
+        srz = EmailSendingSerializer(request.data)
         if srz.is_valid():
             emails = NewsLetter.objcets.all()
             subject = srz['subject']
