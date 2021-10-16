@@ -1,13 +1,13 @@
 from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import Availability, Blog, Category, Comment, Email, Property
+from .models import Availability, Blog, Category, Comment, Email, Images, Property
 from accounts.models import Agent
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required 
 from .forms import (
                 AddImageForm, CommentForm, NewsletterForm,
                 EmailForm, PropertyForm, EmalSendingForm,
-                BlogForm, CommentSave,
+                BlogForm, CommentSave,AddImagesForm
             )
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -318,7 +318,7 @@ def add_image(request, code):
     property = get_object_or_404(Property, code=code)
 
     if request.method == 'POST':
-        form = AddImageForm(request.POST, request.FILES)
+        form = AddImagesForm(request.POST, request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.property = property
@@ -327,9 +327,48 @@ def add_image(request, code):
         else:
             return render(request, 'register.html', {'form':form, 'label':'add image'})
     else:
-        form = AddImageForm()
+        form = AddImagesForm()
         return render(request, 'register.html', {'form':form, 'label':'add image'})
 
+@login_required
+def edit_images(request, code):
+    if not request.user.is_admin:
+        return Http404('this path is not valid')
+
+    property = get_object_or_404(Property, code=code)
+    images = property.property_image.all()
+
+    context = {
+        'images':images
+    }
+    return render(request, 'images.html', context)
+
+@login_required
+def del_image(request, pk):
+    if not request.user.is_admin:
+        return Http404('this path is not valid')
+
+    image = get_object_or_404(Images, pk=pk)
+    code = image.property.code
+    image.delete()
+    return redirect('property:edit_images', code)
+
+@login_required
+def edit_image(request, pk):
+    if not request.user.is_admin:
+        return Http404('this path is not valid')
+
+    image = get_object_or_404(Images, pk=pk)
+    if request.method == 'POST':
+        pass 
+    else:
+        data = {'image':image}
+        form = AddImageForm(initial=data)
+        context = {
+            'form':form,
+            'label':'edit image'
+        }
+        return render(request, 'register.html', context)
 
 def create_comment(request):
     pk = request.POST.get('blog')

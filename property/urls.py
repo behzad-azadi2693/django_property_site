@@ -4,7 +4,8 @@ from .views import (
             index,about,blog,property_detail,contact,
             agent, email_sending,search,blog_single,
             create_blog,edit_blog,save_news_letter,
-            add_image,create_comment
+            add_image,create_comment,edit_image,
+            edit_images,del_image
         )
 
 app_name = 'property'
@@ -21,6 +22,9 @@ urlpatterns = [
     path('create/blog/', create_blog, name="create_blog"),
     path('edit/<str:code>/', edit_property, name="edit_property"),
     path('add/image/<str:code>/', add_image, name="add_image"),
+    path('edit/images/<str:code>/', edit_images, name="edit_images"),
+    path('edit/image/<int:pk>/', edit_image, name="edit_image"),
+    path('delete/image/<int:pk>/', del_image, name="del_image"),
     path('blog/single/<int:pk>/', blog_single, name="blog_single"),
     path('edit/blog/<int:pk>/', edit_blog, name="edit_blog"),
     path('email/submit/', email_submit, name="email_submit"),

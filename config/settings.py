@@ -179,6 +179,9 @@ else:
     EMAIL_HOST_PASSWORD = 'email_password'
     EMAIL_PORT = 587
 
+
+#LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
+
 LOCATION_FIELD = {
     'map.provider': 'openstreetmap',
     'map.zoom': 13,
@@ -207,4 +210,5 @@ LOCATION_FIELD = {
     #         LOCATION_FIELD_PATH + '/js/form.js',
     #     ),
     # },
+    
 }

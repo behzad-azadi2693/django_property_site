@@ -53,7 +53,8 @@
 {% endif %}
 {% if request.user.is_authenticated and request.user.is_admin  %}
         <a href="{% url 'property:edit_property' property.code %}" class="btn btn-info" href="">Edit property</a>
-        <a href="{% url 'property:add_image' property.code %}" class="btn btn-info" href="">Add image</a>
+        <a href="{% url 'property:add_image' property.code %}" class="btn btn-info" href="">Add images</a>
+        <a href="{% url 'property:edit_images' property.code %}" class="btn btn-info" href="">Edit images</a>
 {% endif %}
 </div>
 <div class="row">
@@ -128,12 +129,12 @@
 <div class="enquiry">
   <h6><span class="glyphicon glyphicon-envelope"></span> Post Enquiry</h6>
   <form role="form">
-                <input type="text" class="form-control" placeholder="Full Name"/>
-                <input type="text" class="form-control" placeholder="you@yourdomain.com"/>
-                <input type="text" class="form-control" placeholder="your number"/>
-                <textarea rows="6" class="form-control" placeholder="Whats on your mind?"></textarea>
+      <input type="text" class="form-control" placeholder="Full Name"/>
+      <input type="text" class="form-control" placeholder="you@yourdomain.com"/>
+      <input type="text" class="form-control" placeholder="your number"/>
+      <textarea rows="6" class="form-control" placeholder="Whats on your mind?"></textarea>
       <button type="submit" class="btn btn-primary" name="Submit">Send Message</button>
-      </form>
+  </form>
  </div>         
 </div>
   </div>

@@ -20,13 +20,14 @@ from location_field.forms.spatial import LocationField
 
 
 class PropertyForm(forms.ModelForm):
+    location = LocationField(based_fields=['city'])
+
     rating = forms.IntegerField(
         min_value=0,
         max_value=10,
         error_messages=messages,
         widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'امتیاز از 10...'})
     )
-    location = LocationField(based_fields=['city'], initial=Point(46.97,35.29))
 
     def __init__(self,*args, **kwargs):
         super(PropertyForm, self).__init__(*args, **kwargs)
@@ -51,11 +52,13 @@ class EmailForm(forms.ModelForm):
     code = forms.CharField(
         widget = forms.HiddenInput(attrs={'readonly':'readonly', 'hidden':'hidden'})
     )
+
     def __init__(self,*args, **kwargs):
         super(EmailForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class']='form-control'
             self.fields[field].error_messages = messages
+
     class Meta:
         model = Email
         fields = ('code','full_name','email','phone','message')
@@ -98,6 +101,7 @@ class BlogForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class']='form-control'
             self.fields[field].error_messages = messages
+
     class Meta:
         model=Blog
         fields = ('title','image','description')
@@ -134,6 +138,18 @@ class EmalSendingForm(forms.Form):
         widget = forms.Textarea(attrs={'class':'form-control', 'placeholder':'پیغام شما...'})
     )
 
+class AddImagesForm(forms.ModelForm):
+    def __init__(self,*args, **kwargs):
+        super(AddImageForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class']='form-control'
+            self.fields[field].widget.attrs['multiple']='multiple'
+            self.fields[field].error_messages = messages
+
+    class Meta:
+        model = Images
+        fields = ('image',)
+
 class AddImageForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super(AddImageForm, self).__init__(*args, **kwargs)
@@ -144,5 +160,3 @@ class AddImageForm(forms.ModelForm):
     class Meta:
         model = Images
         fields = ('image',)
-
-
