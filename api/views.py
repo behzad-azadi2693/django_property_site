@@ -1,16 +1,19 @@
-from django.db import models
-from django.http import request
+from rest_framework import status
+from rest_framework.generics import (
+                CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
+                RetrieveUpdateDestroyAPIView
+            )
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView
-from property.models import Availability, Blog, Category, Comment, Email, NewsLetter, Property
+from rest_framework.views import APIView
+from property.models import Availability, Blog, Category, Comment, Email, Images, NewsLetter, Property
 from accounts.models import Agent
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from .serializers import (
             AgentSerializer, AvailabilitySerializer, CatSerializer, CategorySerializer, DetailBlogSerializerAdmin,
-            CommentSerializer, DetailPropertySerializer, EmailSerializer, ListBlogSerializer, ListPropertySerializer,
+            CommentSerializer, DetailPropertySerializer, EmailSerializer, ImagesSerializer, ListBlogSerializer, ListPropertySerializer,
             DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
-            BlogSerializer
+            BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer
         )
 
 class SetPagination(PageNumberPagination):
@@ -124,3 +127,42 @@ class PropertyPiec(ListAPIView):
     def get_queryset(self):
         name = self.kwargs['name']
         return Property.objects.filter(status = name, is_status_now = 'active')
+
+class EditImages(ListAPIView):
+    serializer_class = EditEmaigeSerializer
+    permission_classes = [IsAdminUser]
+    lookup_field = 'code'
+
+    def get_queryset(self):
+        code = self.kwargs['code']
+        property = Property.objects.get(code=code)
+        images = property.property_image.all()
+        return images
+
+class ManageImage(RetrieveUpdateDestroyAPIView):
+    queryset = Images.objects.all()
+    serializer_class = ManageImageSerializer
+    permission_classes = [IsAdminUser]
+
+class AddImages(APIView):
+    def get(self, request, *args, **kwargs):
+        srz = AddImageSerializer()
+        return Response(srz.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        property = request.data['property']
+
+        images = dict((request.data).lists())['image']
+        
+        arr = []
+        for image in images:
+            data = {'image':image, 'property':property}
+            file_serializer = AddImageSerializer(data=data)
+            if file_serializer.is_valid():
+                file_serializer.save()
+                arr.append(file_serializer.data)
+            else:
+                return Response(arr, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(arr, status=status.HTTP_201_CREATED)
+        

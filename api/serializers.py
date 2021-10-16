@@ -48,6 +48,10 @@ class ImagesSerializer(ModelSerializer):
         model = Images
         fields = ('image',)
 
+class AddImageSerializer(ModelSerializer):
+    class Meta:
+        model = Images
+        exclude = ('id',)
 
 class CreatePropertySerializer(ModelSerializer):
     
@@ -84,6 +88,8 @@ class DetailPropertySerializer(ModelSerializer):
         return result
 
 class DetailPropertySerializerAdmin(ModelSerializer):
+    edit_images = HyperlinkedIdentityField(view_name='api:edit_images',lookup_field = 'code', lookup_url_kwarg = 'code')
+    add_images = HyperlinkedIdentityField(view_name='api:add_images', lookup_field = 'code', lookup_url_kwarg = 'code')
     url_update = HyperlinkedIdentityField(view_name='api:update_property')
     availability = AvailabilitySerializer(many=True, read_only=True)
     images = SerializerMethodField()
@@ -94,9 +100,9 @@ class DetailPropertySerializerAdmin(ModelSerializer):
     class Meta:
         model = Property
         fields = (
-            'url_update','name','code','category','availability','agent','address','description',
-            'price','title','image','rating','status','is_status_now','date','location','images',
-            'category_property'
+            'url_update','edit_images','name','code','category','availability','agent','address',
+            'description','price','title','image','rating','status','is_status_now','date','location',
+            'images','category_property'
         )
         
     def get_images(self, obj):
@@ -285,3 +291,16 @@ class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         exclude = ('id',)
+
+
+class EditEmaigeSerializer(ModelSerializer):
+    manage_image = HyperlinkedIdentityField(view_name='api:manage_image')
+
+    class Meta:
+        model = Images
+        fields = ('image', 'manage_image')
+
+class ManageImageSerializer(ModelSerializer):
+    class Meta:
+        model = Images
+        fields = ('image',)

@@ -5,7 +5,8 @@ from .views import (
         IndexSite, DetailProperty, BlogList, BlogDetail, CreateNewsLetter,
         CreateAgent, UpdateAgent, CreateCategory, UpdateCategory,CreateEmail,
         CreateAvail, UpdateAvail, ListCAA,Agents,CreateProperty,UpdateProperty,
-        CreateComment,PropertyPiec,UpdateBlog
+        CreateComment,PropertyPiec,CreateComment,PropertyPiec,UpdateBlog,
+        EditImages,ManageImage,AddImages
     )
 app_name = 'api'
 
@@ -25,7 +26,10 @@ urlpatterns = [
     path('create/email/', CreateEmail.as_view(), name='create_Email'),
     path('create/newsletter/', CreateNewsLetter.as_view(), name='create_newsletter'),
     path('create/comment/', CreateComment.as_view(), name='create_comment'),
-    path('property/<str:name>/', PropertyPiec.as_view(), name='property_piec'),
+    path('property/<str:name>/', PropertyPiec.as_view(), name='property_piec'),    
+    path('edit/images/<str:code>/', EditImages.as_view(), name='edit_images'),
+    path('add/images/', AddImages.as_view(), name='add_images'),
+    path('manage/emaige/<int:pk>/', ManageImage.as_view(), name='manage_image'),
 
     path('create/property/', CreateProperty.as_view(), name='create_property'),
     path('update/property/<int:pk>/', UpdateProperty.as_view(), name='update_property'),
