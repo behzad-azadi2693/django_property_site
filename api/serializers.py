@@ -3,7 +3,8 @@ from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer
 from accounts.models import Agent
 from property.models import Blog, Category, Email, Images, NewsLetter, Property, Comment, Availability
 from rest_framework.reverse import reverse
-from django.db.models import Count
+from django.db.models import Count, fields
+from django.contrib.auth import get_user_model
 
 class EmailSendingSerializer(serializers.Serializer):
     subject = serializers.CharField(allow_blank=True,max_length=200)
@@ -19,7 +20,10 @@ class AgentSerializer(ModelSerializer):
         model = Agent
         exclude = ('id',)
 
-
+class LogInSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
@@ -100,7 +104,7 @@ class DetailPropertySerializerAdmin(ModelSerializer):
     class Meta:
         model = Property
         fields = (
-            'url_update','edit_images','name','code','category','availability','agent','address',
+            'url_update','edit_images','add_images','name','code','category','availability','agent','address',
             'description','price','title','image','rating','status','is_status_now','date','location',
             'images','category_property'
         )

@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'location_field.apps.DefaultConfig',
     #3rd
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken'
+
 ]
 
 MIDDLEWARE = [
@@ -211,4 +213,12 @@ LOCATION_FIELD = {
     #     ),
     # },
     
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }

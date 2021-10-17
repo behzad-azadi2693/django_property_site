@@ -1,6 +1,7 @@
+from django.contrib.auth import get_user_model, login, authenticate
 from rest_framework import serializers, status
 from django.core.mail import send_mail
-
+from django.shortcuts import redirect
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from property.models import Availability, Blog, Category, Comment, Email, Images, NewsLetter, Property
@@ -8,15 +9,42 @@ from accounts.models import Agent
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import (
-                CreateAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
+                CreateAPIView, GenericAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
                 RetrieveUpdateDestroyAPIView
             )
 from .serializers import (
-            AgentSerializer, AvailabilitySerializer, CategorySerializer, DetailBlogSerializerAdmin,
+            AgentSerializer, AvailabilitySerializer, CategorySerializer, DetailBlogSerializerAdmin,LogInSerializer,
             CommentSerializer, DetailPropertySerializer, EmailSerializer, ListBlogSerializer, ListPropertySerializer,
             DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
             BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer, EmailSendingSerializer
         )
+from rest_framework.authtoken.models import Token
+
+class LogIn(APIView):
+    serializer_class = LogInSerializer
+    queryset = get_user_model().objects.all()
+    def get(self, request):
+        srz = self.serializer_class()
+        return Response(srz.data, status=status.HTTP_200_OK)
+        
+    def post(self, request):
+        srz = self.serializer_class(data=request.data)
+
+        if srz.is_valid():
+            email = srz.data['email']
+            password = srz.data['password']
+
+            user = get_user_model().objects.filter(email=email).first()
+            user_auth = authenticate(username=user.username, password=password)
+            token, created = Token.objects.get_or_create(user=user)
+            if user:
+                if user.is_active:
+                    login(request, user_auth)
+                    return redirect('api:index')
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class SetPagination(PageNumberPagination):
     page_size = 10

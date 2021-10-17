@@ -1,19 +1,20 @@
 from django.urls import path
-
+from rest_framework_simplejwt import views as jwt_views
 from property.models import Property
 from .views import (
         IndexSite, DetailProperty, BlogList, BlogDetail, CreateNewsLetter,
         CreateAgent, UpdateAgent, CreateCategory, UpdateCategory,CreateEmail,
         CreateAvail, UpdateAvail, ListCAA,Agents,CreateProperty,UpdateProperty,
         CreateComment,PropertyPiec,CreateComment,PropertyPiec,UpdateBlog,
-        EditImages,ManageImage,AddImages, SendingEmail
+        EditImages,ManageImage,AddImages, SendingEmail, LogIn
     )
 app_name = 'api'
 
 urlpatterns = [ 
     path('', IndexSite.as_view(), name='index'),
+    path('login/', LogIn.as_view(), name='login'),
     path('list/CatAval/', ListCAA.as_view(), name='list'),
-    path('blogs/', BlogList.as_view(), name='index'),
+    path('blogs/', BlogList.as_view(), name='blogs'),
     path('sending/email/', SendingEmail.as_view(), name='email_sending'),
     path('blogs/detail/<int:pk>/', BlogDetail.as_view(), name='blog_detail'),
     path('detail/<str:code>/', DetailProperty.as_view(), name='detail'),
@@ -29,9 +30,10 @@ urlpatterns = [
     path('create/comment/', CreateComment.as_view(), name='create_comment'),
     path('property/<str:name>/', PropertyPiec.as_view(), name='property_piec'),    
     path('edit/images/<str:code>/', EditImages.as_view(), name='edit_images'),
-    path('add/images/', AddImages.as_view(), name='add_images'),
+    path('add/images/<str:code>/', AddImages.as_view(), name='add_images'),
     path('manage/emaige/<int:pk>/', ManageImage.as_view(), name='manage_image'),
-
+    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('create/property/', CreateProperty.as_view(), name='create_property'),
     path('update/property/<int:pk>/', UpdateProperty.as_view(), name='update_property'),
     path('update/blog/<int:pk>/', UpdateBlog.as_view(), name='update_blog'),
