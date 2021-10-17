@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer, SerializerMethodField
+from rest_framework.serializers import HyperlinkedIdentityField, ModelSerializer, SerializerMetaclass, SerializerMethodField
 from accounts.models import Agent
 from property.models import Blog, Category, Email, Images, NewsLetter, Property, Comment, Availability
 from rest_framework.reverse import reverse
 from django.db.models import Count, fields
 from django.contrib.auth import get_user_model
+import redis
+conn = redis.Redis('redis_container', port= 6379, db=0,password="admin", charset='utf-8', decode_responses=True) 
 
 class EmailSendingSerializer(serializers.Serializer):
     subject = serializers.CharField(allow_blank=True,max_length=200)
@@ -72,11 +74,12 @@ class DetailPropertySerializer(ModelSerializer):
     category = CategorySerializer()
     agent = AgentSerializer()
     category_property = SerializerMethodField()
-    
+    count_number = SerializerMethodField()
+
     class Meta:
         model = Property
         fields = (
-            'name','code','category','availability','agent','address','description',
+            'count_number','name','code','category','availability','agent','address','description',
             'price','title','image','rating','status','is_status_now','date','location','images',
             'category_property'
         )
@@ -91,6 +94,12 @@ class DetailPropertySerializer(ModelSerializer):
         result = MinyPropertySerializer(prts, many=True).data
         return result
 
+    def get_count_number(self, obj):
+        key = f'property_view:{obj.pk}'
+        number = conn.scard(key)
+        return number
+
+    
 class DetailPropertySerializerAdmin(ModelSerializer):
     edit_images = HyperlinkedIdentityField(view_name='api:edit_images',lookup_field = 'code', lookup_url_kwarg = 'code')
     add_images = HyperlinkedIdentityField(view_name='api:add_images', lookup_field = 'code', lookup_url_kwarg = 'code')
@@ -99,16 +108,22 @@ class DetailPropertySerializerAdmin(ModelSerializer):
     images = SerializerMethodField()
     category = CategorySerializer()
     agent = AgentSerializer()
+    count_number = SerializerMethodField()
     category_property = SerializerMethodField()
     
     class Meta:
         model = Property
         fields = (
-            'url_update','edit_images','add_images','name','code','category','availability','agent','address',
+            'count_number','url_update','pk','edit_images','add_images','name','code','category','availability','agent','address',
             'description','price','title','image','rating','status','is_status_now','date','location',
             'images','category_property'
         )
-        
+
+    def get_count_number(self, obj):
+        key = f'property_view:{obj.pk}'
+        number = conn.scard(key)
+        return number
+    
     def get_images(self, obj):
         images = Images.objects.filter(property = obj)
         all_image = ImagesSerializer(images, many=True).data 
@@ -144,10 +159,16 @@ class DetailBlogSerializer(ModelSerializer):
     most_comment = SerializerMethodField()
     recent_blog = SerializerMethodField()
     comment = CommentSerializer(write_only=True)
+    count_number = SerializerMethodField()
 
     class Meta:
         model = Blog
-        fields = ('image','title','description','date', 'comments', 'most_comment', 'recent_blog', 'comment')
+        fields = ('count_number','image','title','description','date', 'comments', 'most_comment', 'recent_blog', 'comment')
+
+    def get_count_number(self, obj):
+        key = f'blog_view:{obj.pk}'
+        number = conn.scard(key)
+        return number
 
     def get_comments(self, obj):
         cmt = Comment.objects.filter(blog=obj)
@@ -180,10 +201,15 @@ class DetailBlogSerializerAdmin(ModelSerializer):
     most_comment = SerializerMethodField()
     recent_blog = SerializerMethodField()
     comment = CommentSerializer(write_only=True)
-
+    count_number = SerializerMethodField()
     class Meta:
         model = Blog
-        fields = ('url_update','image','title','description','date', 'comments', 'most_comment', 'recent_blog', 'comment')
+        fields = ('count_number','url_update','image','title','description','date', 'comments', 'most_comment', 'recent_blog', 'comment')
+    
+    def get_count_number(self, obj):
+        key = f'blog_view:{obj.pk}'
+        number = conn.scard(key)
+        return number
 
     def get_comments(self, obj):
         cmt = Comment.objects.filter(blog=obj)

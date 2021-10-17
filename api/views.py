@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, login, authenticate
+from django.core.validators import ip_address_validators
 from rest_framework import serializers, status
 from django.core.mail import send_mail
 from django.shortcuts import redirect
@@ -8,6 +9,7 @@ from property.models import Availability, Blog, Category, Comment, Email, Images
 from accounts.models import Agent
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import (
                 CreateAPIView, GenericAPIView, ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, 
                 RetrieveUpdateDestroyAPIView
@@ -18,11 +20,12 @@ from .serializers import (
             DetailBlogSerializer, ListCASerializer,CreatePropertySerializer, NewsLetterSerializer,DetailPropertySerializerAdmin,
             BlogSerializer, EditEmaigeSerializer,ManageImageSerializer, AddImageSerializer, EmailSendingSerializer
         )
-from rest_framework.authtoken.models import Token
+
 
 class LogIn(APIView):
     serializer_class = LogInSerializer
     queryset = get_user_model().objects.all()
+
     def get(self, request):
         srz = self.serializer_class()
         return Response(srz.data, status=status.HTTP_200_OK)
@@ -87,8 +90,10 @@ class IndexSite(ListAPIView):
     
             
 class DetailProperty(RetrieveAPIView):
+    
     lookup_field= 'code'
     queryset = Property.objects.all()
+
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated and self.request.user.is_admin:
@@ -104,13 +109,15 @@ class BlogList(ListAPIView):
     pagination_class = SetPagination
     
 class BlogDetail(RetrieveAPIView):
-    queryset = Blog.objects.all()
+    queryset = Property.objects.all()
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated and self.request.user.is_admin:
             return DetailBlogSerializerAdmin
         else:
             return DetailBlogSerializer
+
+
 
 class UpdateBlog(RetrieveUpdateAPIView):
     queryset = Blog.objects.all()

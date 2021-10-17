@@ -15,7 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import redis
 
-conn = redis.Redis('127.0.0.1', port= 6379, db=0,password="admin", charset='utf-8', decode_responses=True) 
+conn = redis.Redis('redis_container', port= 6379, db=0,password="admin", charset='utf-8', decode_responses=True) 
 #decode_response for convert b'one':b'1' to 'one':'1'
 
 
