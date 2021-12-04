@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -87,7 +87,8 @@ if DEBUG:
     ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1','*']
 
     DATABASES = {
-        'default': {
+        'defaults',
+        'postgres': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
@@ -96,7 +97,8 @@ else:
     ALLOWED_HOSTS = ['property.com', 'www.property.com']
 
 DATABASES = {
-    'default': {
+    'defaults',
+    'postgres': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'property',
         'USER':'admin',
