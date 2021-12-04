@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     #local
     'django.contrib.humanize',
     #map
+    'accounts.apps.AccountsConfig',
+    'api.apps.ApiConfig',
+    'property.apps.PropertyConfig',
     'django.contrib.gis',
     'location_field.apps.DefaultConfig',
     #3rd
