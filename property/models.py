@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from uuid import uuid4
 from django.core.validators import MaxValueValidator,MinValueValidator
@@ -32,7 +33,8 @@ class Availability(models.Model):
 def path_save_image(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{instance.code}-{instance.pk}.{ext}'
-    return f'property/{instance.code}/{filename}'
+    path_save = os.path.join('property', instance.code, filename)
+    return path_save
 
 class Property(models.Model):
     CHOICE = (
@@ -89,7 +91,8 @@ class Property(models.Model):
 def path_save_images(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{instance.property.code}-{instance.id}.{ext}'
-    return f'property/{instance.property.code}/{filename}'
+    path_save= os.path.join('property', instance.property.code, filename)
+    return path_save
 
 class Images(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_image')
@@ -142,7 +145,8 @@ class NewsLetter(models.Model):
 def path_save_blog(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{instance.title}-{instance.date}.{ext}'
-    return f'blog/{filename}'
+    path_save = os.path.join('blog', filename)
+    return path_save
 
 class Blog(models.Model):
     title = models.CharField(max_length=300, verbose_name='عنوان')
